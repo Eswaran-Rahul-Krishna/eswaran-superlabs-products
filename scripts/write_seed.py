@@ -1,4 +1,4 @@
-﻿import { createClient } from "@supabase/supabase-js";
+content = r'''import { createClient } from "@supabase/supabase-js";
 import * as https from "https";
 
 const supabase = createClient(
@@ -92,8 +92,9 @@ function mapProduct(p: VirginCodesProduct) {
 
   const category =
     productTypeAttrs[0] ??
-    p.productCategories.find((pc) => pc.category.parent?.handle === "product-type")
-      ?.category.name ??
+    p.productCategories.find(
+      (pc) => pc.category.parent?.handle === "product-type"
+    )?.category.name ??
     p.productCategories[0]?.category.name ??
     "Skincare";
 
@@ -222,3 +223,8 @@ seed().catch((err) => {
   console.error(err);
   process.exit(1);
 });
+'''
+
+with open(r'C:\Users\ASUS\eswaran-superlabs-products\scripts\seed.ts', 'w', encoding='utf-8') as f:
+    f.write(content)
+print('Written seed.ts successfully')

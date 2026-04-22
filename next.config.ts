@@ -8,6 +8,14 @@ const nextConfig: NextConfig = {
         protocol: "https",
         hostname: "picsum.photos",
       },
+      {
+        protocol: "https",
+        hostname: "virgincodes.com",
+      },
+      {
+        protocol: "https",
+        hostname: "cdn.virgincodes.com",
+      },
     ],
   },
 };

@@ -28,11 +28,11 @@ import {
  *         description: Product UUID or slug
  *     responses:
  *       200:
- *         description: Product with reviews
+ *         description: Product detail
  *         content:
  *           application/json:
  *             schema:
- *               $ref: '#/components/schemas/ProductWithReviews'
+ *               $ref: '#/components/schemas/Product'
  *       404:
  *         description: Product not found
  */

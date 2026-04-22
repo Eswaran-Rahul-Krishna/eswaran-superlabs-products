@@ -1,8 +1,7 @@
 import { notFound } from "next/navigation";
-import { Star, ShoppingCart, Package } from "lucide-react";
+import { ShoppingCart, Package } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { ImageGallery } from "@/components/ImageGallery";
-import { ReviewsList } from "@/components/ReviewsList";
 import { FadeInUp } from "@/components/animations/FadeInUp";
 import { getProductByIdOrSlug } from "@/lib/repositories/product.repository";
 
@@ -57,24 +56,6 @@ export default async function ProductPage({ params }: ProductPageProps) {
                 SKU: {product.sku}
               </span>
             </div>
-
-            {product.rating_count > 0 && (
-              <div className="flex items-center gap-1.5">
-                {Array.from({ length: 5 }).map((_, i) => (
-                  <Star
-                    key={i}
-                    className={`w-4 h-4 ${
-                      i < Math.round(product.rating)
-                        ? "fill-amber-400 text-amber-400"
-                        : "text-muted-foreground"
-                    }`}
-                  />
-                ))}
-                <span className="text-sm text-muted-foreground ml-1">
-                  {product.rating.toFixed(1)} ({product.rating_count} reviews)
-                </span>
-              </div>
-            )}
 
             <div className="flex items-end gap-3">
               <span className="text-3xl font-bold">
@@ -146,15 +127,6 @@ export default async function ProductPage({ params }: ProductPageProps) {
               </p>
             )}
           </div>
-        </div>
-      </FadeInUp>
-
-      <FadeInUp delay={0.3}>
-        <div className="space-y-4">
-          <h2 className="text-xl font-bold">
-            Reviews ({product.reviews.length})
-          </h2>
-          <ReviewsList reviews={product.reviews} />
         </div>
       </FadeInUp>
     </div>

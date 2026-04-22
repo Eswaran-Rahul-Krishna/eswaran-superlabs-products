@@ -2,7 +2,6 @@ import { createAnonClient } from "@/lib/supabase/server";
 import { createServiceClient } from "@/lib/supabase/server";
 import type {
   Product,
-  ProductWithReviews,
   PaginatedResponse,
 } from "@/lib/types";
 import type {
@@ -10,11 +9,19 @@ import type {
   UpdateProductInput,
 } from "@/lib/validators";
 
+interface SearchFilters {
+  category?: string;
+  brand?: string;
+  min_price?: number;
+  max_price?: number;
+  availability?: string;
+}
+
 export async function searchProducts(
   query: string,
   page: number,
   limit: number,
-  category?: string
+  filters?: SearchFilters
 ): Promise<PaginatedResponse<Product>> {
   const client = createAnonClient();
   const offset = (page - 1) * limit;
@@ -29,8 +36,24 @@ export async function searchProducts(
     );
   }
 
-  if (category) {
-    builder = builder.eq("category", category);
+  if (filters?.category) {
+    builder = builder.eq("category", filters.category);
+  }
+
+  if (filters?.brand) {
+    builder = builder.eq("brand", filters.brand);
+  }
+
+  if (filters?.availability) {
+    builder = builder.eq("availability", filters.availability);
+  }
+
+  if (filters?.min_price !== undefined) {
+    builder = builder.gte("price", filters.min_price);
+  }
+
+  if (filters?.max_price !== undefined) {
+    builder = builder.lte("price", filters.max_price);
   }
 
   const { data, error, count } = await builder
@@ -52,7 +75,7 @@ export async function searchProducts(
 
 export async function getProductByIdOrSlug(
   idOrSlug: string
-): Promise<ProductWithReviews | null> {
+): Promise<Product | null> {
   const client = createAnonClient();
 
   const isUuid =
@@ -68,13 +91,7 @@ export async function getProductByIdOrSlug(
 
   if (error || !product) return null;
 
-  const { data: reviews } = await client
-    .from("reviews")
-    .select("*")
-    .eq("product_id", product.id)
-    .order("created_at", { ascending: false });
-
-  return { ...(product as Product), reviews: reviews ?? [] };
+  return product as Product;
 }
 
 export async function createProduct(
@@ -131,5 +148,18 @@ export async function getAllCategories(): Promise<string[]> {
   if (error) throw new Error(error.message);
 
   const unique = [...new Set((data ?? []).map((r: { category: string }) => r.category))];
+  return unique.sort();
+}
+
+export async function getAllBrands(): Promise<string[]> {
+  const client = createAnonClient();
+
+  const { data, error } = await client
+    .from("products")
+    .select("brand");
+
+  if (error) throw new Error(error.message);
+
+  const unique = [...new Set((data ?? []).map((r: { brand: string }) => r.brand))];
   return unique.sort();
 }

@@ -63,31 +63,6 @@ export function getApiSpec() {
               updated_at: { type: "string", format: "date-time" },
             },
           },
-          Review: {
-            type: "object",
-            properties: {
-              id: { type: "string", format: "uuid" },
-              product_id: { type: "string", format: "uuid" },
-              reviewer_name: { type: "string" },
-              rating: { type: "integer", minimum: 1, maximum: 5 },
-              comment: { type: "string" },
-              created_at: { type: "string", format: "date-time" },
-            },
-          },
-          ProductWithReviews: {
-            allOf: [
-              { $ref: "#/components/schemas/Product" },
-              {
-                type: "object",
-                properties: {
-                  reviews: {
-                    type: "array",
-                    items: { $ref: "#/components/schemas/Review" },
-                  },
-                },
-              },
-            ],
-          },
           PaginatedProducts: {
             type: "object",
             properties: {

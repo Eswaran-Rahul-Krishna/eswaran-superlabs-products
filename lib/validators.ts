@@ -32,6 +32,10 @@ export const SearchQuerySchema = z.object({
   page: z.coerce.number().int().positive().optional().default(1),
   limit: z.coerce.number().int().min(1).max(100).optional().default(12),
   category: z.string().optional(),
+  brand: z.string().optional(),
+  min_price: z.coerce.number().positive().optional(),
+  max_price: z.coerce.number().positive().optional(),
+  availability: z.enum(["in_stock", "out_of_stock", "low_stock"]).optional(),
 });
 
 export type CreateProductInput = z.infer<typeof CreateProductSchema>;

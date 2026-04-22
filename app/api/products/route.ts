@@ -40,6 +40,28 @@ import {
  *         name: category
  *         schema:
  *           type: string
+ *         description: Filter by category
+ *       - in: query
+ *         name: brand
+ *         schema:
+ *           type: string
+ *         description: Filter by brand
+ *       - in: query
+ *         name: availability
+ *         schema:
+ *           type: string
+ *           enum: [in_stock, out_of_stock, low_stock]
+ *         description: Filter by availability
+ *       - in: query
+ *         name: min_price
+ *         schema:
+ *           type: number
+ *         description: Minimum price filter
+ *       - in: query
+ *         name: max_price
+ *         schema:
+ *           type: number
+ *         description: Maximum price filter
  *     responses:
  *       200:
  *         description: Paginated product list
@@ -62,6 +84,10 @@ export async function GET(request: NextRequest) {
     page: searchParams.get("page") ?? 1,
     limit: searchParams.get("limit") ?? 12,
     category: searchParams.get("category") ?? undefined,
+    brand: searchParams.get("brand") ?? undefined,
+    min_price: searchParams.get("min_price") ?? undefined,
+    max_price: searchParams.get("max_price") ?? undefined,
+    availability: searchParams.get("availability") ?? undefined,
   });
 
   if (!parsed.success) {
@@ -73,7 +99,13 @@ export async function GET(request: NextRequest) {
       parsed.data.q,
       parsed.data.page,
       parsed.data.limit,
-      parsed.data.category
+      {
+        category: parsed.data.category,
+        brand: parsed.data.brand,
+        min_price: parsed.data.min_price,
+        max_price: parsed.data.max_price,
+        availability: parsed.data.availability,
+      }
     );
     return NextResponse.json(result);
   } catch {

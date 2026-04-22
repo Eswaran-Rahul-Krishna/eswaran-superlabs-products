@@ -26,19 +26,6 @@ export interface Product {
   updated_at: string;
 }
 
-export interface Review {
-  id: string;
-  product_id: string;
-  reviewer_name: string;
-  rating: number;
-  comment: string;
-  created_at: string;
-}
-
-export interface ProductWithReviews extends Product {
-  reviews: Review[];
-}
-
 export interface PaginatedResponse<T> {
   data: T[];
   total: number;
