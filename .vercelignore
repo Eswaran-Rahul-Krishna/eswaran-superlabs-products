@@ -1,0 +1,4 @@
+scripts/
+supabase/
+*.md
+!README.md
