@@ -6,11 +6,10 @@ import { Plus, RefreshCw } from "lucide-react";
 import { toast } from "sonner";
 import { ProductTable } from "@/components/admin/ProductTable";
 import { FadeInUp } from "@/components/animations/FadeInUp";
-import { useAdminToken } from "@/components/admin/AdminAuthProvider";
+import { deleteProductAction } from "./actions";
 import type { Product } from "@/lib/types";
 
 export default function AdminPage() {
-  const adminSecret = useAdminToken();
   const [products, setProducts] = useState<Product[]>([]);
   const [loading, setLoading] = useState(true);
 
@@ -33,16 +32,11 @@ export default function AdminPage() {
   }, [fetchProducts]);
 
   const handleDelete = async (id: string) => {
-
-    const res = await fetch(`/api/products/${id}`, {
-      method: "DELETE",
-      headers: { Authorization: `Bearer ${adminSecret}` },
-    });
-
-    if (res.ok) {
+    try {
+      await deleteProductAction(id);
       setProducts((prev) => prev.filter((p) => p.id !== id));
       toast.success("Product deleted");
-    } else {
+    } catch {
       toast.error("Failed to delete product");
     }
   };

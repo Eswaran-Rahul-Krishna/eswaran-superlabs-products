@@ -7,7 +7,7 @@ import { ArrowLeft } from "lucide-react";
 import Link from "next/link";
 import { ProductForm } from "@/components/admin/ProductForm";
 import { FadeInUp } from "@/components/animations/FadeInUp";
-import { useAdminToken } from "@/components/admin/AdminAuthProvider";
+import { updateProductAction } from "../../actions";
 import type { CreateProductInput } from "@/lib/validators";
 import type { Product } from "@/lib/types";
 
@@ -17,7 +17,6 @@ interface EditProductPageProps {
 
 export default function EditProductPage({ params }: EditProductPageProps) {
   const router = useRouter();
-  const adminSecret = useAdminToken();
   const [product, setProduct] = useState<Product | null>(null);
   const [loading, setLoading] = useState(false);
   const [fetching, setFetching] = useState(true);
@@ -40,26 +39,11 @@ export default function EditProductPage({ params }: EditProductPageProps) {
     setError(null);
 
     try {
-      const res = await fetch(`/api/products/${productId}`, {
-        method: "PUT",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${adminSecret}`,
-        },
-        body: JSON.stringify(data),
-      });
-
-      const json = await res.json();
-
-      if (!res.ok) {
-        setError(json.error ?? "Failed to update product");
-        return;
-      }
-
+      await updateProductAction(productId, data);
       toast.success("Product updated successfully");
       router.push("/admin");
-    } catch {
-      setError("Network error. Please try again.");
+    } catch (err) {
+      setError(err instanceof Error ? err.message : "Failed to update product");
     } finally {
       setLoading(false);
     }

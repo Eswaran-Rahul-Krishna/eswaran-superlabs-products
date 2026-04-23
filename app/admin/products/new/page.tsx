@@ -7,12 +7,11 @@ import { ArrowLeft } from "lucide-react";
 import Link from "next/link";
 import { ProductForm } from "@/components/admin/ProductForm";
 import { FadeInUp } from "@/components/animations/FadeInUp";
-import { useAdminToken } from "@/components/admin/AdminAuthProvider";
+import { createProductAction } from "../actions";
 import type { CreateProductInput } from "@/lib/validators";
 
 export default function NewProductPage() {
   const router = useRouter();
-  const adminSecret = useAdminToken();
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
@@ -21,26 +20,11 @@ export default function NewProductPage() {
     setError(null);
 
     try {
-      const res = await fetch("/api/products", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${adminSecret}`,
-        },
-        body: JSON.stringify(data),
-      });
-
-      const json = await res.json();
-
-      if (!res.ok) {
-        setError(json.error ?? "Failed to create product");
-        return;
-      }
-
+      await createProductAction(data);
       toast.success("Product created successfully");
       router.push("/admin");
-    } catch {
-      setError("Network error. Please try again.");
+    } catch (err) {
+      setError(err instanceof Error ? err.message : "Failed to create product");
     } finally {
       setLoading(false);
     }
