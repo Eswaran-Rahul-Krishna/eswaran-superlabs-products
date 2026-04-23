@@ -316,13 +316,11 @@ export function ProductForm({
             <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
               <Field label="Price *">
                 <div className="relative">
-                  <span className="absolute left-3 top-1/2 -translate-y-1/2 text-sm text-muted-foreground font-medium">₹</span>
+                  <span className="absolute left-3 top-1/2 -translate-y-1/2 text-sm font-medium pointer-events-none select-none">₹</span>
                   <Input
-                    type="number"
-                    min="0"
-                    step="0.01"
+                    inputMode="decimal"
                     value={form.price}
-                    onChange={(e) => set("price", e.target.value)}
+                    onChange={(e) => set("price", e.target.value.replace(/[^0-9.]/g, ""))}
                     required
                     placeholder="999"
                     className="pl-7"
@@ -331,13 +329,11 @@ export function ProductForm({
               </Field>
               <Field label="Compare At Price" hint="Crossed-out price">
                 <div className="relative">
-                  <span className="absolute left-3 top-1/2 -translate-y-1/2 text-sm text-muted-foreground font-medium">₹</span>
+                  <span className="absolute left-3 top-1/2 -translate-y-1/2 text-sm font-medium pointer-events-none select-none">₹</span>
                   <Input
-                    type="number"
-                    min="0"
-                    step="0.01"
+                    inputMode="decimal"
                     value={form.compare_at_price}
-                    onChange={(e) => set("compare_at_price", e.target.value)}
+                    onChange={(e) => set("compare_at_price", e.target.value.replace(/[^0-9.]/g, ""))}
                     placeholder="1299"
                     className="pl-7"
                   />
