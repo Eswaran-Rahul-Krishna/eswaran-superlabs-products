@@ -6,9 +6,11 @@ import { Plus, RefreshCw } from "lucide-react";
 import { toast } from "sonner";
 import { ProductTable } from "@/components/admin/ProductTable";
 import { FadeInUp } from "@/components/animations/FadeInUp";
+import { useAdminToken } from "@/components/admin/AdminAuthProvider";
 import type { Product } from "@/lib/types";
 
 export default function AdminPage() {
+  const adminSecret = useAdminToken();
   const [products, setProducts] = useState<Product[]>([]);
   const [loading, setLoading] = useState(true);
 
@@ -31,7 +33,6 @@ export default function AdminPage() {
   }, [fetchProducts]);
 
   const handleDelete = async (id: string) => {
-    const adminSecret = process.env.NEXT_PUBLIC_ADMIN_SECRET ?? "";
 
     const res = await fetch(`/api/products/${id}`, {
       method: "DELETE",

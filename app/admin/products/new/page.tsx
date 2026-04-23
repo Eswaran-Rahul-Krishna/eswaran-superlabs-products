@@ -7,18 +7,18 @@ import { ArrowLeft } from "lucide-react";
 import Link from "next/link";
 import { ProductForm } from "@/components/admin/ProductForm";
 import { FadeInUp } from "@/components/animations/FadeInUp";
+import { useAdminToken } from "@/components/admin/AdminAuthProvider";
 import type { CreateProductInput } from "@/lib/validators";
 
 export default function NewProductPage() {
   const router = useRouter();
+  const adminSecret = useAdminToken();
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
   const handleSubmit = async (data: CreateProductInput) => {
     setLoading(true);
     setError(null);
-
-    const adminSecret = process.env.NEXT_PUBLIC_ADMIN_SECRET ?? "";
 
     try {
       const res = await fetch("/api/products", {

@@ -4,7 +4,7 @@ export function getApiSpec() {
   return {
     openapi: "3.0.0",
     info: {
-      title: "NexaStack Systems Demo API",
+      title: "SuperLabs Products API",
       version: "1.0.0",
       description:
         "REST API for the NexaStack Systems Demo product listing service.",
@@ -79,6 +79,20 @@ export function getApiSpec() {
             created_at: { type: "string", format: "date-time" },
             updated_at: { type: "string", format: "date-time" },
           },
+        },
+        ProductDetail: {
+          allOf: [
+            { $ref: "#/components/schemas/Product" },
+            {
+              type: "object",
+              properties: {
+                reviews: {
+                  type: "array",
+                  items: { $ref: "#/components/schemas/Review" },
+                },
+              },
+            },
+          ],
         },
         PaginatedProducts: {
           type: "object",
@@ -182,9 +196,9 @@ export function getApiSpec() {
           ],
           responses: {
             "200": {
-              description: "Product detail",
+              description: "Product detail with reviews",
               content: {
-                "application/json": { schema: { $ref: "#/components/schemas/Product" } },
+                "application/json": { schema: { $ref: "#/components/schemas/ProductDetail" } },
               },
             },
             "404": { description: "Product not found" },

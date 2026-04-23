@@ -3,6 +3,7 @@ import {
   getProductByIdOrSlug,
   updateProduct,
   deleteProduct,
+  getReviewsByProductId,
 } from "@/lib/repositories/product.repository";
 import { UpdateProductSchema } from "@/lib/validators";
 import {
@@ -45,7 +46,8 @@ export async function GET(
   try {
     const product = await getProductByIdOrSlug(id);
     if (!product) return notFound("Product not found");
-    return NextResponse.json(product);
+    const reviews = await getReviewsByProductId(product.id);
+    return NextResponse.json({ ...product, reviews });
   } catch {
     return serverError();
   }

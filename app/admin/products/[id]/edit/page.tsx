@@ -7,6 +7,7 @@ import { ArrowLeft } from "lucide-react";
 import Link from "next/link";
 import { ProductForm } from "@/components/admin/ProductForm";
 import { FadeInUp } from "@/components/animations/FadeInUp";
+import { useAdminToken } from "@/components/admin/AdminAuthProvider";
 import type { CreateProductInput } from "@/lib/validators";
 import type { Product } from "@/lib/types";
 
@@ -16,6 +17,7 @@ interface EditProductPageProps {
 
 export default function EditProductPage({ params }: EditProductPageProps) {
   const router = useRouter();
+  const adminSecret = useAdminToken();
   const [product, setProduct] = useState<Product | null>(null);
   const [loading, setLoading] = useState(false);
   const [fetching, setFetching] = useState(true);
@@ -36,8 +38,6 @@ export default function EditProductPage({ params }: EditProductPageProps) {
   const handleSubmit = async (data: CreateProductInput) => {
     setLoading(true);
     setError(null);
-
-    const adminSecret = process.env.NEXT_PUBLIC_ADMIN_SECRET ?? "";
 
     try {
       const res = await fetch(`/api/products/${productId}`, {
