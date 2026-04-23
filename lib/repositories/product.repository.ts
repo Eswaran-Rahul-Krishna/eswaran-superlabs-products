@@ -37,6 +37,7 @@ async function _searchProducts(
   if (filters?.max_price !== undefined) builder = builder.lte("price", filters.max_price);
 
   const { data, error, count } = await builder
+    .order("rating_count", { ascending: false })
     .order("created_at", { ascending: false })
     .range(offset, offset + limit - 1);
 

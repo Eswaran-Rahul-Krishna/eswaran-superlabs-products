@@ -7,7 +7,7 @@ export function getApiSpec() {
       title: "SuperLabs Products API",
       version: "1.0.0",
       description:
-        "REST API for the NexaStack Systems Demo product listing service.",
+        "REST API for the SuperLabs product listing service — product search, detail, reviews, and admin management.",
       contact: { name: "Eswaran" },
     },
     tags: [

@@ -1,36 +1,68 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# SuperLabs Products — Backend Developer Task 2026
 
-## Getting Started
+A full-stack eCommerce product listing service built with **Next.js 16 (App Router)**, **TypeScript**, **PostgreSQL (Supabase)**, and deployed on **Vercel**.
 
-First, run the development server:
+## Live Demo
+
+> Add your Vercel URL here after deployment.
+
+## Tech Stack
+
+| Layer | Technology |
+|---|---|
+| Framework | Next.js 16.2 (App Router, Turbopack) |
+| Language | TypeScript |
+| Database | PostgreSQL via Supabase |
+| Styling | Tailwind CSS v4 |
+| Validation | Zod |
+| API Docs | Swagger UI / OpenAPI 3.0 |
+| Deployment | Vercel |
+
+## API Endpoints
+
+| Method | Path | Description |
+|---|---|---|
+| GET | `/api/products` | Search & list products with pagination and filters |
+| GET | `/api/products/:id` | Product detail with embedded reviews |
+| POST | `/api/products` | Create product (admin) |
+| PUT | `/api/products/:id` | Update product (admin) |
+| DELETE | `/api/products/:id` | Delete product (admin) |
+| GET | `/api/products/:id/reviews` | Get reviews for a product |
+| POST | `/api/products/:id/reviews` | Submit a review |
+| GET | `/api/filters` | Get available categories & brands |
+| GET | `/api/docs` | OpenAPI JSON spec |
+
+## Pages
+
+| Path | Description |
+|---|---|
+| `/` | Search page — product listing with filters, pagination, infinite scroll |
+| `/products/:slug` | Product detail page — images, specs, reviews |
+| `/admin` | Admin product management — create, edit, delete |
+| `/docs` | Interactive Swagger UI API documentation |
+
+## Local Development
 
 ```bash
+# Install dependencies
+npm install
+
+# Copy and fill in environment variables
+cp .env.example .env.local
+
+# Run dev server
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+## Required Environment Variables
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+```
+NEXT_PUBLIC_SUPABASE_URL=
+NEXT_PUBLIC_SUPABASE_ANON_KEY=
+SUPABASE_SERVICE_ROLE_KEY=
+ADMIN_SECRET=
+```
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+## Admin Access
 
-## Learn More
-
-To learn more about Next.js, take a look at the following resources:
-
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
-
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
-
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+The admin interface at `/admin` uses Next.js Server Actions with `ADMIN_SECRET` stored as a server-only environment variable. No secret is exposed to the client bundle.
