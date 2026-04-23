@@ -83,7 +83,7 @@ export default function EditProductPage({ params }: EditProductPageProps) {
 
   return (
     <FadeInUp>
-      <div className="max-w-3xl space-y-6">
+      <div className="space-y-6">
         <div className="flex items-center gap-3">
           <Link
             href="/admin"
@@ -95,15 +95,13 @@ export default function EditProductPage({ params }: EditProductPageProps) {
           <h1 className="text-2xl font-bold">Edit Product</h1>
         </div>
 
-        <div className="rounded-xl border border-border p-6">
-          <ProductForm
-            initialData={product}
-            onSubmit={handleSubmit}
-            submitLabel="Save Changes"
-            loading={loading}
-            error={error}
-          />
-        </div>
+        <ProductForm
+          initialData={product}
+          onSubmit={handleSubmit}
+          submitLabel="Save Changes"
+          loading={loading}
+          error={error}
+        />
       </div>
     </FadeInUp>
   );

@@ -1,7 +1,7 @@
 import { z } from "zod";
 
 const ProductImageSchema = z.object({
-  url: z.string().url(),
+  url: z.string().min(1), // accepts https:// URLs and data: URIs from file uploads
   alt: z.string().min(1),
 });
 

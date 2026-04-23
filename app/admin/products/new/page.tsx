@@ -48,7 +48,7 @@ export default function NewProductPage() {
 
   return (
     <FadeInUp>
-      <div className="max-w-3xl space-y-6">
+      <div className="space-y-6">
         <div className="flex items-center gap-3">
           <Link
             href="/admin"
@@ -60,14 +60,12 @@ export default function NewProductPage() {
           <h1 className="text-2xl font-bold">New Product</h1>
         </div>
 
-        <div className="rounded-xl border border-border p-6">
-          <ProductForm
-            onSubmit={handleSubmit}
-            submitLabel="Create Product"
-            loading={loading}
-            error={error}
-          />
-        </div>
+        <ProductForm
+          onSubmit={handleSubmit}
+          submitLabel="Create Product"
+          loading={loading}
+          error={error}
+        />
       </div>
     </FadeInUp>
   );
