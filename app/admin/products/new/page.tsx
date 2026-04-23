@@ -7,7 +7,7 @@ import { ArrowLeft } from "lucide-react";
 import Link from "next/link";
 import { ProductForm } from "@/components/admin/ProductForm";
 import { FadeInUp } from "@/components/animations/FadeInUp";
-import { createProductAction } from "../actions";
+import { createProductAction } from "../../actions";
 import type { CreateProductInput } from "@/lib/validators";
 
 export default function NewProductPage() {

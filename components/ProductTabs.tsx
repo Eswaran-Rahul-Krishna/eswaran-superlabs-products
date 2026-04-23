@@ -1,6 +1,7 @@
 "use client";
 
 import { motion } from "framer-motion";
+import type { Variants } from "framer-motion";
 import { Star } from "lucide-react";
 import type { Review } from "@/lib/types";
 
@@ -9,12 +10,12 @@ interface ProductTabsProps {
   reviews: Review[];
 }
 
-const fadeUp = {
+const fadeUp: Variants = {
   hidden: { opacity: 0, y: 24 },
   visible: (i: number) => ({
     opacity: 1,
     y: 0,
-    transition: { duration: 0.4, delay: i * 0.06, ease: "easeOut" },
+    transition: { duration: 0.4, delay: i * 0.06, ease: "easeOut" as const },
   }),
 };
 

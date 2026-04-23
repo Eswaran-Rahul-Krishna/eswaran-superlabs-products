@@ -15,7 +15,7 @@ export async function createProductAction(data: CreateProductInput): Promise<Pro
   const parsed = CreateProductSchema.safeParse(data);
   if (!parsed.success) throw new Error(parsed.error.issues[0].message);
   const product = await createProduct(parsed.data);
-  revalidateTag("products");
+  revalidateTag("products", "max");
   return product;
 }
 
@@ -25,11 +25,11 @@ export async function updateProductAction(id: string, data: UpdateProductInput):
   const existing = await getProductByIdOrSlug(id);
   if (!existing) throw new Error("Product not found");
   const product = await updateProduct(id, parsed.data);
-  revalidateTag("products");
+  revalidateTag("products", "max");
   return product;
 }
 
 export async function deleteProductAction(id: string): Promise<void> {
   await deleteProduct(id);
-  revalidateTag("products");
+  revalidateTag("products", "max");
 }

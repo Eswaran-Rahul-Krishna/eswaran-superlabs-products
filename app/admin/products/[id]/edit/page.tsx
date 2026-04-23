@@ -7,7 +7,7 @@ import { ArrowLeft } from "lucide-react";
 import Link from "next/link";
 import { ProductForm } from "@/components/admin/ProductForm";
 import { FadeInUp } from "@/components/animations/FadeInUp";
-import { updateProductAction } from "../../actions";
+import { updateProductAction } from "../../../actions";
 import type { CreateProductInput } from "@/lib/validators";
 import type { Product } from "@/lib/types";
 
