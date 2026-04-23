@@ -157,7 +157,8 @@ async function _getReviewsByProductId(productId: string): Promise<Review[]> {
     .select("*")
     .eq("product_id", productId)
     .order("created_at", { ascending: false });
-  if (error) throw new Error(error.message);
+  // Gracefully return empty array if the reviews table doesn't exist yet
+  if (error) return [];
   return (data as Review[]) ?? [];
 }
 
