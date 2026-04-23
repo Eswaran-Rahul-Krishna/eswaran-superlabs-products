@@ -26,7 +26,7 @@ export function ProductCard({ product }: ProductCardProps) {
 
   return (
     <motion.div className="h-full" whileHover={{ y: -4 }} transition={{ duration: 0.2 }}>
-      <Link href={`/products/${product.slug}`} className="h-full block">
+      <Link href={`/products/${product.slug}`} className="h-full block" target="_blank" rel="noopener noreferrer">
         <Card className="overflow-hidden h-full flex flex-col group cursor-pointer border-border/60 hover:border-border hover:shadow-lg transition-all duration-300">
           <div className="relative aspect-square overflow-hidden bg-muted">
             {primaryImage ? (
@@ -53,9 +53,11 @@ export function ProductCard({ product }: ProductCardProps) {
 
           <CardContent className="p-4 flex flex-col flex-1 gap-2">
             <div className="flex items-start justify-between gap-2">
-              <p className="text-xs text-muted-foreground uppercase tracking-wider">
-                {product.brand}
-              </p>
+              {product.brand && product.brand.toLowerCase() !== "unknown" && (
+                <p className="text-xs text-muted-foreground uppercase tracking-wider">
+                  {product.brand}
+                </p>
+              )}
               <Badge variant={availability.variant} className="shrink-0">
                 {availability.label}
               </Badge>
