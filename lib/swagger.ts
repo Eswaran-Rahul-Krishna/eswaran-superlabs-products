@@ -4,10 +4,10 @@ export function getApiSpec() {
   return {
     openapi: "3.0.0",
     info: {
-      title: "SuperLabs Product API",
+      title: "NexaStack Systems Demo API",
       version: "1.0.0",
       description:
-        "REST API for the SuperLabs eCommerce product listing service. Built by Eswaran.",
+        "REST API for the NexaStack Systems Demo product listing service.",
       contact: { name: "Eswaran" },
     },
     tags: [

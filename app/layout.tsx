@@ -7,8 +7,8 @@ import { Toaster } from "sonner";
 const inter = Inter({ subsets: ["latin"], display: "swap", preload: false });
 
 export const metadata: Metadata = {
-  title: "SuperLabs Products",
-  description: "Product listing platform built by Eswaran for SuperLabs",
+  title: "NexaStack Systems Demo",
+  description: "Product listing platform for NexaStack Systems Demo",
 };
 
 export default function RootLayout({

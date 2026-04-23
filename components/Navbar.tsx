@@ -20,7 +20,7 @@ export function Navbar() {
         <Link href="/" className="flex items-center gap-2">
           <ShoppingBag className="w-5 h-5 text-primary" />
           <span className="font-bold text-base tracking-tight">
-            SuperLabs<span className="text-muted-foreground font-normal"> Products</span>
+            NexaStack<span className="text-muted-foreground font-normal"> Systems Demo</span>
           </span>
         </Link>
 
