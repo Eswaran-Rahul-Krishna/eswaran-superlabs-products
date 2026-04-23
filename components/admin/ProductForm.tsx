@@ -314,26 +314,34 @@ export function ProductForm({
           {/* Pricing */}
           <Section icon={<IndianRupee className="w-4 h-4" />} title="Pricing & Inventory" delay={0.1}>
             <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-              <Field label="Price (â‚¹) *">
-                <Input
-                  type="number"
-                  min="0"
-                  step="0.01"
-                  value={form.price}
-                  onChange={(e) => set("price", e.target.value)}
-                  required
-                  placeholder="999"
-                />
+              <Field label="Price *">
+                <div className="relative">
+                  <span className="absolute left-3 top-1/2 -translate-y-1/2 text-sm text-muted-foreground font-medium">₹</span>
+                  <Input
+                    type="number"
+                    min="0"
+                    step="0.01"
+                    value={form.price}
+                    onChange={(e) => set("price", e.target.value)}
+                    required
+                    placeholder="999"
+                    className="pl-7"
+                  />
+                </div>
               </Field>
-              <Field label="Compare At Price (â‚¹)" hint="Crossed-out price">
-                <Input
-                  type="number"
-                  min="0"
-                  step="0.01"
-                  value={form.compare_at_price}
-                  onChange={(e) => set("compare_at_price", e.target.value)}
-                  placeholder="1299"
-                />
+              <Field label="Compare At Price" hint="Crossed-out price">
+                <div className="relative">
+                  <span className="absolute left-3 top-1/2 -translate-y-1/2 text-sm text-muted-foreground font-medium">₹</span>
+                  <Input
+                    type="number"
+                    min="0"
+                    step="0.01"
+                    value={form.compare_at_price}
+                    onChange={(e) => set("compare_at_price", e.target.value)}
+                    placeholder="1299"
+                    className="pl-7"
+                  />
+                </div>
               </Field>
               <Field label="Stock Quantity *">
                 <Input
