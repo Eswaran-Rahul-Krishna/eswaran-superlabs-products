@@ -314,7 +314,7 @@ export function ProductForm({
           {/* Pricing */}
           <Section icon={<IndianRupee className="w-4 h-4" />} title="Pricing & Inventory" delay={0.1}>
             <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-              <Field label="Price *">
+              <Field label="Price (INR) *">
                 <div className="relative">
                   <span className="absolute left-3 top-1/2 -translate-y-1/2 text-sm font-medium pointer-events-none select-none">₹</span>
                   <Input
@@ -327,7 +327,7 @@ export function ProductForm({
                   />
                 </div>
               </Field>
-              <Field label="Compare At Price" hint="Crossed-out price">
+              <Field label="Compare At Price (INR)" hint="Crossed-out price">
                 <div className="relative">
                   <span className="absolute left-3 top-1/2 -translate-y-1/2 text-sm font-medium pointer-events-none select-none">₹</span>
                   <Input
@@ -706,7 +706,7 @@ export function ProductForm({
                 <div className="flex items-center gap-2 pt-1">
                   {price > 0 ? (
                     <span className="font-bold text-base">
-                      â‚¹{price.toLocaleString("en-IN")}
+                      ₹{price.toLocaleString("en-IN")}
                     </span>
                   ) : (
                     <span className="text-sm text-muted-foreground italic">No price set</span>
@@ -714,7 +714,7 @@ export function ProductForm({
                   {hasDiscount && (
                     <>
                       <span className="text-sm text-muted-foreground line-through">
-                        â‚¹{comparePrice.toLocaleString("en-IN")}
+                        ₹{comparePrice.toLocaleString("en-IN")}
                       </span>
                       <span className="text-xs font-semibold text-emerald-600">
                         {discountPct}% off
