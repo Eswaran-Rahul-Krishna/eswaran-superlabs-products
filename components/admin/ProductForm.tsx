@@ -610,7 +610,6 @@ export function ProductForm({
                       animate={{ opacity: 1, scale: 1 }}
                       exit={{ opacity: 0 }}
                       transition={{ duration: 0.25 }}
-                      // eslint-disable-next-line @next/next/no-img-element
                       src={previewUrl}
                       alt={form.images[activeImageIdx]?.alt || form.name}
                       className="absolute inset-0 w-full h-full object-cover"
