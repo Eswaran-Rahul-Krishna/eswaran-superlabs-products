@@ -5,6 +5,7 @@ import { ImageGallery } from "@/components/ImageGallery";
 import { FadeInUp } from "@/components/animations/FadeInUp";
 import { getProductByIdOrSlug, getReviewsByProductId } from "@/lib/repositories/product.repository";
 import { createAnonClient } from "@/lib/supabase/server";
+import { ProductTabs } from "@/components/ProductTabs";
 
 // Pre-build every product page at deploy time; revalidate in background every hour.
 export const revalidate = 3600;
@@ -141,82 +142,7 @@ export default async function ProductPage({ params }: ProductPageProps) {
       </div>
 
       <FadeInUp delay={0.2}>
-        <div className="border border-border rounded-xl overflow-hidden">
-          <div className="border-b border-border">
-            <div className="flex">
-              <span className="px-6 py-3 text-sm font-medium border-b-2 border-primary text-primary">
-                Specifications
-              </span>
-              <span className="px-6 py-3 text-sm font-medium text-muted-foreground">
-                Reviews ({reviews.length})
-              </span>
-            </div>
-          </div>
-
-          <div className="p-6 space-y-8">
-            {/* Specifications */}
-            {specsEntries.length > 0 ? (
-              <dl className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-                {specsEntries.map(([key, value]) => (
-                  <div
-                    key={key}
-                    className="flex justify-between py-2 border-b border-border/60 last:border-0"
-                  >
-                    <dt className="text-sm text-muted-foreground">{key}</dt>
-                    <dd className="text-sm font-medium">{String(value)}</dd>
-                  </div>
-                ))}
-              </dl>
-            ) : (
-              <p className="text-sm text-muted-foreground">
-                No specifications available.
-              </p>
-            )}
-
-            {/* Reviews */}
-            <div className="space-y-4">
-              <h3 className="text-sm font-semibold border-t border-border pt-6">
-                Customer Reviews
-              </h3>
-              {reviews.length === 0 ? (
-                <p className="text-sm text-muted-foreground">No reviews yet.</p>
-              ) : (
-                <ul className="space-y-4">
-                  {reviews.map((review) => (
-                    <li
-                      key={review.id}
-                      className="rounded-lg border border-border p-4 space-y-2"
-                    >
-                      <div className="flex items-center justify-between gap-3">
-                        <span className="text-sm font-medium">{review.reviewer_name}</span>
-                        <div className="flex items-center gap-0.5">
-                          {[1, 2, 3, 4, 5].map((star) => (
-                            <Star
-                              key={star}
-                              className={`w-3.5 h-3.5 ${
-                                star <= review.rating
-                                  ? "fill-amber-400 text-amber-400"
-                                  : "text-muted-foreground/30"
-                              }`}
-                            />
-                          ))}
-                        </div>
-                      </div>
-                      <p className="text-sm text-muted-foreground">{review.comment}</p>
-                      <p className="text-xs text-muted-foreground/60">
-                        {new Date(review.created_at).toLocaleDateString("en-IN", {
-                          day: "numeric",
-                          month: "short",
-                          year: "numeric",
-                        })}
-                      </p>
-                    </li>
-                  ))}
-                </ul>
-              )}
-            </div>
-          </div>
-        </div>
+        <ProductTabs specsEntries={specsEntries} reviews={reviews} />
       </FadeInUp>
     </div>
   );
