@@ -39,3 +39,11 @@ yarn-error.log*
 # typescript
 *.tsbuildinfo
 next-env.d.ts
+
+# local data and migration tooling
+/supabase/migrations/
+/scripts/migrate.ts
+/scripts/seed.ts
+/scripts/seed-reviews.ts
+/scripts/write_seed.py
+/dev-output.txt
