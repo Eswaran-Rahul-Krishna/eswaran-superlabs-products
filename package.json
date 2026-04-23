@@ -6,7 +6,10 @@
     "dev": "node --require ./node-patch.cjs ./node_modules/next/dist/bin/next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "eslint"
+    "lint": "eslint",
+    "migrate": "npx tsx --env-file=.env.local scripts/migrate.ts",
+    "seed": "npx tsx --env-file=.env.local scripts/seed.ts",
+    "seed:reviews": "npx tsx --env-file=.env.local scripts/seed-reviews.ts"
   },
   "dependencies": {
     "@supabase/ssr": "^0.10.2",
@@ -29,11 +32,13 @@
   "devDependencies": {
     "@tailwindcss/postcss": "^4.2.4",
     "@types/node": "^20",
+    "@types/pg": "^8.20.0",
     "@types/react": "^19",
     "@types/react-dom": "^19",
     "@types/swagger-ui-react": "^5.18.0",
     "eslint": "^9",
     "eslint-config-next": "16.2.4",
+    "pg": "^8.20.0",
     "tailwindcss": "^4.2.4",
     "typescript": "^5"
   }
