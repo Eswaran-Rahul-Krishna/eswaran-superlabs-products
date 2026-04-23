@@ -1,9 +1,9 @@
 import { notFound } from "next/navigation";
-import { ShoppingCart, Package } from "lucide-react";
+import { ShoppingCart, Package, Star } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { ImageGallery } from "@/components/ImageGallery";
 import { FadeInUp } from "@/components/animations/FadeInUp";
-import { getProductByIdOrSlug } from "@/lib/repositories/product.repository";
+import { getProductByIdOrSlug, getReviewsByProductId } from "@/lib/repositories/product.repository";
 import { createAnonClient } from "@/lib/supabase/server";
 
 // Pre-build every product page at deploy time; revalidate in background every hour.
@@ -39,6 +39,8 @@ export default async function ProductPage({ params }: ProductPageProps) {
   const product = await getProductByIdOrSlug(id);
 
   if (!product) notFound();
+
+  const reviews = await getReviewsByProductId(product.id);
 
   const availability = availabilityConfig[product.availability];
   const hasDiscount =
@@ -99,6 +101,27 @@ export default async function ProductPage({ params }: ProductPageProps) {
               <span>{product.stock_quantity} units in stock</span>
             </div>
 
+            {product.rating > 0 && (
+              <div className="flex items-center gap-2">
+                <div className="flex items-center gap-0.5">
+                  {[1, 2, 3, 4, 5].map((star) => (
+                    <Star
+                      key={star}
+                      className={`w-4 h-4 ${
+                        star <= Math.round(product.rating)
+                          ? "fill-amber-400 text-amber-400"
+                          : "text-muted-foreground/30"
+                      }`}
+                    />
+                  ))}
+                </div>
+                <span className="text-sm font-medium">{product.rating.toFixed(1)}</span>
+                <span className="text-sm text-muted-foreground">
+                  ({product.rating_count} {product.rating_count === 1 ? "review" : "reviews"})
+                </span>
+              </div>
+            )}
+
             {product.tags.length > 0 && (
               <div className="flex flex-wrap gap-2">
                 {product.tags.map((tag) => (
@@ -121,13 +144,17 @@ export default async function ProductPage({ params }: ProductPageProps) {
         <div className="border border-border rounded-xl overflow-hidden">
           <div className="border-b border-border">
             <div className="flex">
-              <button className="px-6 py-3 text-sm font-medium border-b-2 border-primary text-primary">
+              <span className="px-6 py-3 text-sm font-medium border-b-2 border-primary text-primary">
                 Specifications
-              </button>
+              </span>
+              <span className="px-6 py-3 text-sm font-medium text-muted-foreground">
+                Reviews ({reviews.length})
+              </span>
             </div>
           </div>
 
-          <div className="p-6">
+          <div className="p-6 space-y-8">
+            {/* Specifications */}
             {specsEntries.length > 0 ? (
               <dl className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                 {specsEntries.map(([key, value]) => (
@@ -136,7 +163,7 @@ export default async function ProductPage({ params }: ProductPageProps) {
                     className="flex justify-between py-2 border-b border-border/60 last:border-0"
                   >
                     <dt className="text-sm text-muted-foreground">{key}</dt>
-                    <dd className="text-sm font-medium">{value}</dd>
+                    <dd className="text-sm font-medium">{String(value)}</dd>
                   </div>
                 ))}
               </dl>
@@ -145,6 +172,49 @@ export default async function ProductPage({ params }: ProductPageProps) {
                 No specifications available.
               </p>
             )}
+
+            {/* Reviews */}
+            <div className="space-y-4">
+              <h3 className="text-sm font-semibold border-t border-border pt-6">
+                Customer Reviews
+              </h3>
+              {reviews.length === 0 ? (
+                <p className="text-sm text-muted-foreground">No reviews yet.</p>
+              ) : (
+                <ul className="space-y-4">
+                  {reviews.map((review) => (
+                    <li
+                      key={review.id}
+                      className="rounded-lg border border-border p-4 space-y-2"
+                    >
+                      <div className="flex items-center justify-between gap-3">
+                        <span className="text-sm font-medium">{review.reviewer_name}</span>
+                        <div className="flex items-center gap-0.5">
+                          {[1, 2, 3, 4, 5].map((star) => (
+                            <Star
+                              key={star}
+                              className={`w-3.5 h-3.5 ${
+                                star <= review.rating
+                                  ? "fill-amber-400 text-amber-400"
+                                  : "text-muted-foreground/30"
+                              }`}
+                            />
+                          ))}
+                        </div>
+                      </div>
+                      <p className="text-sm text-muted-foreground">{review.comment}</p>
+                      <p className="text-xs text-muted-foreground/60">
+                        {new Date(review.created_at).toLocaleDateString("en-IN", {
+                          day: "numeric",
+                          month: "short",
+                          year: "numeric",
+                        })}
+                      </p>
+                    </li>
+                  ))}
+                </ul>
+              )}
+            </div>
           </div>
         </div>
       </FadeInUp>

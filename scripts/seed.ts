@@ -20,6 +20,69 @@ const API_BASE = "https://virgincodes.com/api/v1/store/product-search?inStock=fa
 const MAX_PAGES = 20;
 const BATCH_SIZE = 50;
 
+// ─── Sample reviewers & comments for seeding ─────────────────────────────────
+
+const REVIEWER_NAMES = [
+  "Priya S.", "Anjali M.", "Deepa R.", "Kavita N.", "Shalini T.",
+  "Meena L.", "Rupa K.", "Nisha P.", "Divya G.", "Leela B.",
+  "Arun V.", "Kiran D.", "Sunita H.", "Rekha J.", "Pooja C.",
+];
+
+const REVIEW_TEMPLATES: Record<number, string[]> = {
+  5: [
+    "Absolutely love this product! My skin feels amazing after just a week.",
+    "One of the best purchases I've made. Highly recommend to everyone.",
+    "Exceeded my expectations. Great quality and fast absorption.",
+    "My skin has never looked this good. Will definitely repurchase.",
+    "Perfect product! Gentle on my sensitive skin and works brilliantly.",
+  ],
+  4: [
+    "Really good product. Noticed visible improvement in a few days.",
+    "Nice texture and pleasant scent. Works as described.",
+    "Good value for money. Will buy again.",
+    "Effective and easy to use. Skin feels softer already.",
+    "Works well for my skin type. A bit pricey but worth it.",
+  ],
+  3: [
+    "Decent product but expected more for the price.",
+    "Average results. May work better for other skin types.",
+    "It's okay. Did not see dramatic changes but not bad.",
+    "Neutral experience. Packaging could be better.",
+    "Mildly effective. Still giving it more time.",
+  ],
+  2: [
+    "Didn't work well for my skin. Felt heavy.",
+    "Expected more from the reviews. Disappointing.",
+    "Product is average. Would not repurchase.",
+    "Not worth the price. Minimal results.",
+    "Caused mild irritation. Might work for others.",
+  ],
+  1: [
+    "Did not work for me at all.",
+    "Had a reaction to this. Not recommended for sensitive skin.",
+    "Very disappointed. Expected much better.",
+  ],
+};
+
+function generateReviews(productId: string, avgRating: number, reviewCount: number) {
+  // Cap at 8 seeded reviews per product to keep the seed manageable
+  const count = Math.min(reviewCount, 8);
+  const reviews = [];
+  for (let i = 0; i < count; i++) {
+    // Distribute ratings around avgRating using small jitter
+    const jitter = Math.floor(Math.random() * 3) - 1; // -1, 0, +1
+    const rating = Math.max(1, Math.min(5, Math.round(avgRating) + jitter));
+    const templates = REVIEW_TEMPLATES[rating];
+    const comment = templates[Math.floor(Math.random() * templates.length)];
+    const reviewer_name = REVIEWER_NAMES[Math.floor(Math.random() * REVIEWER_NAMES.length)];
+    // Stagger created_at over the past 6 months
+    const daysAgo = Math.floor(Math.random() * 180);
+    const created_at = new Date(Date.now() - daysAgo * 86400000).toISOString();
+    reviews.push({ product_id: productId, reviewer_name, rating, comment, created_at });
+  }
+  return reviews;
+}
+
 // ─── API Types ────────────────────────────────────────────────────────────────
 
 interface VirginCodesVariant {
@@ -226,6 +289,66 @@ async function seed() {
   }
 
   console.log(`\nDone! ${inserted} products upserted.`);
+
+  // ─── Seed reviews ────────────────────────────────────────────────────────
+  // Fetch the upserted products to get their UUIDs and source rating data
+  const { data: dbProducts, error: fetchErr } = await supabase
+    .from("products")
+    .select("id, sku, rating, rating_count");
+
+  if (fetchErr) {
+    console.error("Could not fetch products for review seeding:", fetchErr.message);
+    return;
+  }
+
+  // Build a map from sku -> { id, rating, rating_count }
+  const skuMap = new Map(
+    (dbProducts ?? []).map((p: { id: string; sku: string; rating: number; rating_count: number }) => [
+      p.sku,
+      { id: p.id, rating: p.rating, rating_count: p.rating_count },
+    ])
+  );
+
+  // Check if reviews table already has rows (avoid duplicating on re-run)
+  const { count: existingReviewCount } = await supabase
+    .from("reviews")
+    .select("*", { count: "exact", head: true });
+
+  if ((existingReviewCount ?? 0) > 0) {
+    console.log(`\nSkipped review seeding — ${existingReviewCount} reviews already exist.`);
+    return;
+  }
+
+  const allReviews: {
+    product_id: string;
+    reviewer_name: string;
+    rating: number;
+    comment: string;
+    created_at: string;
+  }[] = [];
+
+  for (const p of raw) {
+    const entry = skuMap.get(p.id.slice(0, 100));
+    if (!entry || entry.rating_count === 0) continue;
+    const reviews = generateReviews(entry.id, entry.rating, entry.rating_count);
+    allReviews.push(...reviews);
+  }
+
+  console.log(`\nSeeding ${allReviews.length} reviews...`);
+
+  let reviewsInserted = 0;
+  for (let i = 0; i < allReviews.length; i += BATCH_SIZE) {
+    const batch = allReviews.slice(i, i + BATCH_SIZE);
+    const { error: revErr } = await supabase.from("reviews").insert(batch);
+    if (revErr) {
+      console.error(`  Reviews batch ${i}–${i + batch.length - 1} failed: ${revErr.message}`);
+    } else {
+      reviewsInserted += batch.length;
+      console.log(`  Reviews batch ${i + 1}–${i + batch.length} inserted (${reviewsInserted}/${allReviews.length})`);
+    }
+  }
+
+  console.log(`\nDone! ${reviewsInserted} reviews seeded.`);
 }
 
 seed().catch((err) => {

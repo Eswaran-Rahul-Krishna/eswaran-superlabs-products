@@ -1,5 +1,14 @@
 export type Availability = "in_stock" | "out_of_stock" | "low_stock";
 
+export interface Review {
+  id: string;
+  product_id: string;
+  reviewer_name: string;
+  rating: number;
+  comment: string;
+  created_at: string;
+}
+
 export interface ProductImage {
   url: string;
   alt: string;

@@ -1,6 +1,6 @@
 import { unstable_cache } from "next/cache";
 import { createAnonClient, createServiceClient } from "@/lib/supabase/server";
-import type { Product, PaginatedResponse } from "@/lib/types";
+import type { Product, Review, PaginatedResponse } from "@/lib/types";
 import type { CreateProductInput, UpdateProductInput } from "@/lib/validators";
 
 interface SearchFilters {
@@ -146,4 +146,36 @@ export async function deleteProduct(id: string): Promise<void> {
 
   const { error } = await client.from("products").delete().eq("id", id);
   if (error) throw new Error(error.message);
+}
+
+// ─── Reviews ─────────────────────────────────────────────────────────────────
+
+async function _getReviewsByProductId(productId: string): Promise<Review[]> {
+  const client = createAnonClient();
+  const { data, error } = await client
+    .from("reviews")
+    .select("*")
+    .eq("product_id", productId)
+    .order("created_at", { ascending: false });
+  if (error) throw new Error(error.message);
+  return (data as Review[]) ?? [];
+}
+
+export const getReviewsByProductId = unstable_cache(
+  _getReviewsByProductId,
+  ["reviews-by-product"],
+  { revalidate: 300, tags: ["reviews"] }
+);
+
+export async function createReview(
+  input: Omit<Review, "id" | "created_at">
+): Promise<Review> {
+  const client = createServiceClient();
+  const { data, error } = await client
+    .from("reviews")
+    .insert(input)
+    .select()
+    .single();
+  if (error) throw new Error(error.message);
+  return data as Review;
 }

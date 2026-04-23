@@ -31,6 +31,26 @@ export function getApiSpec() {
             alt: { type: "string" },
           },
         },
+        Review: {
+          type: "object",
+          properties: {
+            id: { type: "string", format: "uuid" },
+            product_id: { type: "string", format: "uuid" },
+            reviewer_name: { type: "string" },
+            rating: { type: "integer", minimum: 1, maximum: 5 },
+            comment: { type: "string" },
+            created_at: { type: "string", format: "date-time" },
+          },
+        },
+        CreateReview: {
+          type: "object",
+          required: ["reviewer_name", "rating", "comment"],
+          properties: {
+            reviewer_name: { type: "string", maxLength: 100 },
+            rating: { type: "integer", minimum: 1, maximum: 5 },
+            comment: { type: "string" },
+          },
+        },
         Product: {
           type: "object",
           properties: {
@@ -227,6 +247,68 @@ export function getApiSpec() {
                 },
               },
             },
+          },
+        },
+      },
+      "/api/products/{id}/reviews": {
+        get: {
+          tags: ["Products"],
+          summary: "Get reviews for a product",
+          parameters: [
+            {
+              in: "path",
+              name: "id",
+              required: true,
+              schema: { type: "string" },
+              description: "Product UUID or slug",
+            },
+          ],
+          responses: {
+            "200": {
+              description: "List of reviews",
+              content: {
+                "application/json": {
+                  schema: {
+                    type: "array",
+                    items: { $ref: "#/components/schemas/Review" },
+                  },
+                },
+              },
+            },
+            "404": { description: "Product not found" },
+          },
+        },
+        post: {
+          tags: ["Products"],
+          summary: "Submit a review for a product",
+          parameters: [
+            {
+              in: "path",
+              name: "id",
+              required: true,
+              schema: { type: "string" },
+              description: "Product UUID or slug",
+            },
+          ],
+          requestBody: {
+            required: true,
+            content: {
+              "application/json": {
+                schema: { $ref: "#/components/schemas/CreateReview" },
+              },
+            },
+          },
+          responses: {
+            "201": {
+              description: "Created review",
+              content: {
+                "application/json": {
+                  schema: { $ref: "#/components/schemas/Review" },
+                },
+              },
+            },
+            "400": { description: "Validation error" },
+            "404": { description: "Product not found" },
           },
         },
       },
