@@ -4,6 +4,16 @@ import { Badge } from "@/components/ui/badge";
 import { ImageGallery } from "@/components/ImageGallery";
 import { FadeInUp } from "@/components/animations/FadeInUp";
 import { getProductByIdOrSlug } from "@/lib/repositories/product.repository";
+import { createAnonClient } from "@/lib/supabase/server";
+
+// Pre-build every product page at deploy time; revalidate in background every hour.
+export const revalidate = 3600;
+
+export async function generateStaticParams() {
+  const client = createAnonClient();
+  const { data } = await client.from("products").select("slug");
+  return (data ?? []).map((p: { slug: string }) => ({ id: p.slug }));
+}
 
 interface ProductPageProps {
   params: Promise<{ id: string }>;

@@ -1,6 +1,6 @@
 "use client";
 
-import { useCallback, useState } from "react";
+import { useRef, useState } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { Search, X } from "lucide-react";
 import { Input } from "@/components/ui/input";
@@ -17,24 +17,29 @@ export function SearchBar({ defaultValue = "" }: SearchBarProps) {
   const searchParams = useSearchParams();
   const [value, setValue] = useState(defaultValue);
   const debouncedValue = useDebounce(value, 400);
-
-  const updateSearch = useCallback(
-    (query: string) => {
-      const params = new URLSearchParams(searchParams.toString());
-      if (query) {
-        params.set("q", query);
-      } else {
-        params.delete("q");
-      }
-      params.set("page", "1");
-      router.push(`/?${params.toString()}`);
-    },
-    [router, searchParams]
-  );
+  const hasHydrated = useRef(false);
 
   useEffect(() => {
-    updateSearch(debouncedValue);
-  }, [debouncedValue, updateSearch]);
+    if (!hasHydrated.current) {
+      hasHydrated.current = true;
+      return;
+    }
+
+    const currentQuery = searchParams.get("q") ?? "";
+    if (debouncedValue === currentQuery) {
+      return;
+    }
+
+    const params = new URLSearchParams(searchParams.toString());
+    if (debouncedValue) {
+      params.set("q", debouncedValue);
+    } else {
+      params.delete("q");
+    }
+    params.set("page", "1");
+
+    router.push(`/?${params.toString()}`);
+  }, [debouncedValue, router, searchParams]);
 
   return (
     <div className="relative w-full max-w-2xl">
