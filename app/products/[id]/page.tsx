@@ -10,9 +10,18 @@ import { createAnonClient } from "@/lib/supabase/server";
 export const revalidate = 3600;
 
 export async function generateStaticParams() {
-  const client = createAnonClient();
-  const { data } = await client.from("products").select("slug");
-  return (data ?? []).map((p: { slug: string }) => ({ id: p.slug }));
+  // Skip pre-building if Supabase env vars are not set (e.g. CI without secrets).
+  // Pages will be server-rendered on demand via ISR (revalidate = 3600).
+  if (!process.env.NEXT_PUBLIC_SUPABASE_URL || !process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY) {
+    return [];
+  }
+  try {
+    const client = createAnonClient();
+    const { data } = await client.from("products").select("slug");
+    return (data ?? []).map((p: { slug: string }) => ({ id: p.slug }));
+  } catch {
+    return [];
+  }
 }
 
 interface ProductPageProps {
