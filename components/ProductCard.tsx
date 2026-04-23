@@ -27,7 +27,7 @@ export function ProductCard({ product }: ProductCardProps) {
   return (
     <motion.div whileHover={{ y: -4 }} transition={{ duration: 0.2 }}>
       <Link href={`/products/${product.slug}`}>
-        <Card className="overflow-hidden h-full group cursor-pointer border-border/60 hover:border-border hover:shadow-lg transition-all duration-300">
+        <Card className="overflow-hidden h-full flex flex-col group cursor-pointer border-border/60 hover:border-border hover:shadow-lg transition-all duration-300">
           <div className="relative aspect-square overflow-hidden bg-muted">
             {primaryImage ? (
               <Image
@@ -51,7 +51,7 @@ export function ProductCard({ product }: ProductCardProps) {
             )}
           </div>
 
-          <CardContent className="p-4 space-y-2">
+          <CardContent className="p-4 flex flex-col flex-1 gap-2">
             <div className="flex items-start justify-between gap-2">
               <p className="text-xs text-muted-foreground uppercase tracking-wider">
                 {product.brand}
@@ -74,7 +74,7 @@ export function ProductCard({ product }: ProductCardProps) {
               </div>
             )}
 
-            <div className="flex items-center gap-2 pt-1">
+            <div className="flex items-center gap-2 pt-1 mt-auto">
               <span className="font-bold text-base">
                 ₹{product.price.toLocaleString("en-IN")}
               </span>

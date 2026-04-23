@@ -30,7 +30,7 @@ export function ProductGrid({ products, loading = false }: ProductGridProps) {
   return (
     <StaggerContainer className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 md:gap-6">
       {products.map((product) => (
-        <StaggerItem key={product.id}>
+        <StaggerItem key={product.id} className="h-full">
           <ProductCard product={product} />
         </StaggerItem>
       ))}
