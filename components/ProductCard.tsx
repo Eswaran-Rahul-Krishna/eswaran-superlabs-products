@@ -25,8 +25,8 @@ export function ProductCard({ product }: ProductCardProps) {
     product.compare_at_price && product.compare_at_price > product.price;
 
   return (
-    <motion.div whileHover={{ y: -4 }} transition={{ duration: 0.2 }}>
-      <Link href={`/products/${product.slug}`}>
+    <motion.div className="h-full" whileHover={{ y: -4 }} transition={{ duration: 0.2 }}>
+      <Link href={`/products/${product.slug}`} className="h-full block">
         <Card className="overflow-hidden h-full flex flex-col group cursor-pointer border-border/60 hover:border-border hover:shadow-lg transition-all duration-300">
           <div className="relative aspect-square overflow-hidden bg-muted">
             {primaryImage ? (
