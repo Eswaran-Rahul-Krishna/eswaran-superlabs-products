@@ -1,4 +1,4 @@
 scripts/
-supabase/
+/supabase/
 *.md
 !README.md
