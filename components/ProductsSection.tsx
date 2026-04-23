@@ -76,28 +76,34 @@ function ProductsSectionInner() {
   );
 
   // Reset + fetch page 1 when filters change
-  useEffect(() => {
-    setInitialLoading(true);
-    setProducts([]);
-    setCurrentPage(1);
+  const fetchFirstPage = useCallback(
+    (signal: AbortSignal) => {
+      setInitialLoading(true);
+      setProducts([]);
+      setCurrentPage(1);
 
-    const controller = new AbortController();
-    fetch(`/api/products?${buildParams(1).toString()}`, { signal: controller.signal })
-      .then((res) => res.json())
-      .then((json: ProductsData) => {
-        setProducts(json.data);
-        setTotal(json.total);
-        setTotalPages(json.totalPages);
-        setCurrentPage(1);
-        setInitialLoading(false);
-      })
-      .catch((err) => {
-        if (err.name !== "AbortError") setInitialLoading(false);
-      });
-
-    return () => controller.abort();
+      fetch(`/api/products?${buildParams(1).toString()}`, { signal })
+        .then((res) => res.json())
+        .then((json: ProductsData) => {
+          setProducts(json.data);
+          setTotal(json.total);
+          setTotalPages(json.totalPages);
+          setCurrentPage(1);
+          setInitialLoading(false);
+        })
+        .catch((err) => {
+          if (err.name !== "AbortError") setInitialLoading(false);
+        });
+    },
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [filterKey]);
+    [buildParams]
+  );
+
+  useEffect(() => {
+    const controller = new AbortController();
+    fetchFirstPage(controller.signal);
+    return () => controller.abort();
+  }, [fetchFirstPage]);
 
   // Load next page
   const loadMore = useCallback(() => {
