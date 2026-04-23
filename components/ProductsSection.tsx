@@ -95,12 +95,12 @@ function ProductsSectionInner() {
           if (err.name !== "AbortError") setInitialLoading(false);
         });
     },
-    // eslint-disable-next-line react-hooks/exhaustive-deps
     [buildParams]
   );
 
   useEffect(() => {
     const controller = new AbortController();
+    // eslint-disable-next-line react-hooks/set-state-in-effect
     fetchFirstPage(controller.signal);
     return () => controller.abort();
   }, [fetchFirstPage]);
